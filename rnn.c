@@ -1,13 +1,6 @@
 // rnn.c
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-
-#define INPUT_NEURONS    7
-#define HIDDEN_NEURONS  10
-#define OUTPUT_NEURONS   1
+#include "nettypes.h"
 
 double inputs[ INPUT_NEURONS+1 ];
 double hidden[ HIDDEN_NEURONS+1 ];
@@ -18,10 +11,6 @@ double w_h_i[ HIDDEN_NEURONS ][ INPUT_NEURONS+1 ];
 double w_o_h[ OUTPUT_NEURONS ][ HIDDEN_NEURONS+1 ];
 double w_a_h[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback Neurons
 
-#define getSRand( )       ( ( double ) rand( ) / ( double ) RAND_MAX )
-#define getRand( x )      ( int ) ( ( x ) * getSrand( ) )
-#define GetRandWeight( )  ( getSRand( ) - 0.5 )
-
 // One-hot input vector
 // input -> hidden -> output
 //           ^  |
@@ -30,9 +19,9 @@ double w_a_h[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback Neurons
 //
 
 // test vocabulary (5)
-// hello, help, hop, heel
-// poll, plop, peel, polo, pool
-// loop, lop, 
+// hello, help, hope, heel, hole
+// poll, plop, peel, polo, pool,
+// loop, lope
 //
 // One hot vectors: 
 //
