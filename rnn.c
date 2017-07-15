@@ -4,18 +4,20 @@
 
 double inputs[ INPUT_NEURONS+1 ];
 double hidden[ HIDDEN_NEURONS+1 ];
-double hidden_prior[ HIDDEN_NEURONS+1 ];
+double context[ HIDDEN_NEURONS+1 ];
 double outputs[ OUTPUT_NEURONS ];
 
 double w_h_i[ HIDDEN_NEURONS ][ INPUT_NEURONS+1 ];
 double w_o_h[ OUTPUT_NEURONS ][ HIDDEN_NEURONS+1 ];
-double w_a_h[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback Neurons
+double w_h_c[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
+
+#define sigmoid( x )    ( 1.0 / ( 1.0 + exp( -x ) ) )
 
 // One-hot input vector
 // input -> hidden -> output
 //           ^  |
 //           |  v
-//          activation
+//          context
 //
 
 // test vocabulary (5)
@@ -34,13 +36,13 @@ double w_a_h[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback Neurons
 //
 
 
-void clear_hidden_activations( void )
+void clear_hidden_context( void )
 {
    int k;
 
    for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
    {
-      hidden_prior[ k ] = 0.0;
+      context[ k ] = 0.0;
    }
 }
 
@@ -63,10 +65,11 @@ void RNN_feed_forward( void )
       // Incorporate the recurrent hidden.
       for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
       {
-         hidden[ i ] += w_a_h[ i ][ k ] * hidden_prior[ k ];
+         hidden[ i ] += w_h_c[ i ][ k ] * context[ k ];
       }
 
       // apply tanh activation function.
+      hidden[ i ] = tanh( hidden[ i ] );
 
    }
 
@@ -79,13 +82,15 @@ void RNN_feed_forward( void )
       {
          outputs[ i ] += ( w_o_h[ i ][ j ] * hidden[ j ] );
       }
-      // apply tanh activation function.
+
+      // apply sigmoid activation function.
+      outputs[ i ] = sigmoid( outputs[ i ] );
    }
 
-   // Save the prior hidden value
+   // Save the context hidden value
    for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
    {
-      hidden_prior[ k ] = hidden[ k ];
+      context[ k ] = hidden[ k ];
    }
 
    return;
@@ -96,10 +101,10 @@ void RNN_load_network( member *member )
 {
    int i, j;
 
-   // Set the bias to one.
+   // Set the biases.
    inputs[ INPUT_NEURONS ] = 1.0;
    hidden[ HIDDEN_NEURONS ] = 1.0;
-   hidden_prior[ HIDDEN_NEURONS ] = 1.0;
+   context[ HIDDEN_NEURONS ] = 1.0;
 
    // @TODO: Convert the member chromosome to a network.
 
