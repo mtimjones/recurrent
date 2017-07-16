@@ -1,7 +1,5 @@
 // ga.h
 
-#include "nettypes.h"
-
 #define NUM_WEIGHTS    ( ( INPUT_NEURONS        * ( HIDDEN_NEURONS + 1 ) ) + \
                        ( ( HIDDEN_NEURONS + 1 ) * ( HIDDEN_NEURONS + 1 ) ) + \
                        ( ( HIDDEN_NEURONS + 1 ) * OUTPUT_NEURONS ) )
@@ -21,4 +19,4 @@ typedef struct Member
 
 void GA_init_population( unsigned int );
 double GA_get_member_weight( unsigned int, unsigned int, unsigned int );
-
+void GA_set_fitness( unsigned int, unsigned int, double );

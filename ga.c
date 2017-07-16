@@ -1,7 +1,6 @@
 // ga.c
 
 #include "nettypes.h"
-#include "ga.h"
 
 static Member population[ 2 ][ POP_SIZE ];
 
@@ -30,7 +29,15 @@ double GA_get_member_weight( unsigned int pop, unsigned int member, unsigned int
    // Weights are 0..65535.
    // Translated as ( Weight - 32767 ) * 0.001
 
+   if ( index >= NUM_WEIGHTS ) assert( 0 );
+
    return ( ( double )population[ pop ][ member ].chromosome[ index ] - 32767.0 ) * 0.001;
+}
+
+
+void GA_set_fitness( unsigned int pop, unsigned int member, double fitness )
+{
+   population[ pop ][ member ].fitness = fitness;
 }
 
 

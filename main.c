@@ -1,6 +1,4 @@
 #include "nettypes.h"
-#include "ga.h"
-
 
 void test_population( unsigned int cur_pop )
 {
@@ -8,9 +6,9 @@ void test_population( unsigned int cur_pop )
 
    for ( i = 0 ; i < POP_SIZE ; i++ )
    {
-      RNN_load_network( i );
+      RNN_load_network( cur_pop, i );
 
-      RNN_test_network( i );
+      RNN_test_network( cur_pop, i );
    }
 
    return;
