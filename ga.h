@@ -4,7 +4,7 @@
                        ( ( HIDDEN_NEURONS + 1 ) * ( HIDDEN_NEURONS + 1 ) ) + \
                        ( ( HIDDEN_NEURONS + 1 ) * OUTPUT_NEURONS ) )
 
-#define POP_SIZE       200
+#define POP_SIZE       10000
 
 typedef unsigned short Chromosome[ NUM_WEIGHTS ];
 
@@ -14,8 +14,8 @@ typedef struct Member
    double     fitness;
 } Member;
 
-#define MUTATE_PROB    0.02
-#define CROSS_PROB     0.04
+#define MUTATE_PROB    0.006
+#define CROSS_PROB     0.003
 
 // Prototypes
 

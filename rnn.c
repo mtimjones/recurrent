@@ -36,12 +36,12 @@ double w_h_c[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback (context) Neuron
 //      [ 1 0 0 0 0 0 ] = d
 //
 
-#define MAX_TESTS    16
+#define MAX_TESTS    15
 
 const char *test_strings[ MAX_TESTS ] = {
-    "based", "baned", "nabes", "sedan", "snead",
-    "bend", "bead", "sand", "send", "sane", "band", "dean",
-    "end", "dab", "ben", "and"
+    "based", "baned", "sedan", "nabes",
+    "bend", "bead", "sand", "band", "dean", "send",
+    "end", "dab", "ben", "and", "sed"
 };
 
 
@@ -140,7 +140,6 @@ void RNN_feed_forward( void )
 
       // apply tanh activation function.
       hidden[ i ] = tanh( hidden[ i ] );
-
    }
 
    // Calculate output layer outputs
@@ -225,11 +224,6 @@ int test_word( unsigned int index )
 //      printf("     Fed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
    }
 
-   // Advance to push the predicted character
-//   set_input_vector( '.' );
-//   RNN_feed_forward( );
-//   printf("     %c\n", get_parsed_output_vector( ) );
-
 //   printf("Testing %c == %c\n", 
 //      get_parsed_output_vector( ), test_strings[ index ][ i ] );
 
@@ -238,11 +232,13 @@ int test_word( unsigned int index )
       return 1;
    }
    
+//printf("Failed %s\n", test_strings[ index ] );
+
    return 0;
 }
 
 
-void RNN_test_network( unsigned int cur_pop, unsigned int member )
+double RNN_test_network( unsigned int cur_pop, unsigned int member )
 {
    int i;
    int score = 0;
@@ -252,10 +248,12 @@ void RNN_test_network( unsigned int cur_pop, unsigned int member )
       score += test_word( i );
    }
 
-   printf("Score = %d\n", score );
+//   printf("Score = %d\n", score );
 
-   GA_set_fitness( cur_pop, member, ( double )( ( 2 ^ score ) + 1.0 ) );
+   if (score == MAX_TESTS) exit( 0 );
 
-   return;
+   GA_set_fitness( cur_pop, member, ( double )( ( score * score ) + 1.0 ) );
+
+   return score;
 }
 

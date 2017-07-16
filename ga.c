@@ -4,8 +4,9 @@
 
 static Member population[ 2 ][ POP_SIZE ];
 
-#define getRandWeight( )  ( getRand( 65536 ) )
+#define getRandWeight( )      ( getRand( 65536 ) )
 
+#define PROB( probability )   ( getSRand( ) < probability )
 
 void GA_init_population( unsigned int pop )
 {
@@ -49,15 +50,46 @@ void recombine( unsigned int pop,
                 double       cross_p
                 )
 {
+   unsigned int sel = getRand(2);
+   unsigned int w_index;
+   unsigned short weight;
 
+   for ( w_index = 0 ; w_index < NUM_WEIGHTS ; w_index++ )
+   {
+      // Get the parent chromsome's weight
+      if ( sel == 0 )
+      {
+         // Select from parent1
+         weight = population[ pop ][ parent1 ].chromosome[ w_index ];
+      }
+      else
+      {
+         // Select from parent2
+         weight = population[ pop ][ parent2 ].chromosome[ w_index ];
+      }
 
+      // Mutate with the given probability.
+      if ( PROB( mutate_p ) )
+      {
+         weight = getRandWeight( );
+      }
+
+      // Crossover with the given probability.
+      if ( PROB( cross_p ) )
+      {
+         sel = !sel;
+      }
+
+      // Load the weight into the child's chromosome.
+      population[ !pop ][ child ].chromosome[ w_index ] = weight;
+   }
 }
 
 unsigned int select_parent( unsigned int pop, double sumf )
 {
    int index;
    double sum = 0.0;
-   double limit = ( ( double ) rand( ) / ( double ) RAND_MAX * sumf );
+   double limit = ( ( ( double ) rand( ) / ( double ) RAND_MAX ) * sumf );
 
    for ( index = 0 ; index < POP_SIZE ; index++ )
    {
@@ -74,17 +106,17 @@ void GA_process_population( unsigned int pop )
 {
    double sum = 0.0;
    double max = 0.0;
-   int best = 0;
+   int best;
    int i, child;
 
    best = 0;
-   sum = max = population[ pop ][ 0 ].fitness;
+   sum = max = population[ pop ][ best ].fitness;
 
    // Calculate the total population fitness
    for ( i = 1 ; i < POP_SIZE ; i++ )
    {
       sum += population[ pop ][ i ].fitness;
-      if ( population[ pop ][ i ].fitness > best )
+      if ( population[ pop ][ i ].fitness > max )
       {
          best = i;
          max = population[ pop ][ i ].fitness;

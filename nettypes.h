@@ -7,7 +7,7 @@
 #include <assert.h>
 
 #define INPUT_NEURONS    6
-#define HIDDEN_NEURONS  10
+#define HIDDEN_NEURONS  15
 #define OUTPUT_NEURONS   ( INPUT_NEURONS )
 
 #define getSRand( )       ( ( double ) rand( ) / ( double ) RAND_MAX )
