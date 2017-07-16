@@ -25,19 +25,10 @@ void main( int argc, char *argv[] )
 
    test_population( cur_pop );
 
-   // Evaluate the fitness of each member
+   GA_process_population( cur_pop );
 
-      // Convert the member to the network weights.
-
-      // Test the network with the available tests.
-
-      // Maintain a fitness value that is stored with the member.
-
-   // Sort the members
-
-   // Selection, Keep the top N, mutate/crossover the rest.
-
-   // Swap population
+   // Switch the population.
+   cur_pop = !cur_pop;
 
    // Repeat until MSE < X
 

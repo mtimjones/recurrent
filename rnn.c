@@ -21,27 +21,27 @@ double w_h_c[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback (context) Neuron
 //          context
 //
 
-// test vocabulary (6)
-// hello, help, hope, heel, hole
-// poll, plop, peel, polo, pool,
-// loop, lope
+// test vocabulary (5)
+//    based, baned, nabes, sedan, snead
+//    bend, bead, sand, send, sane, band, dean
+//    end, dab, ben, and
 //
 // One hot vectors: 
 //
-//      [ 0 0 0 0 0 1 ] = h
-//      [ 0 0 0 0 1 0 ] = e
-//      [ 0 0 0 1 0 0 ] = l
-//      [ 0 0 1 0 0 0 ] = o
-//      [ 0 1 0 0 0 0 ] = p
-//      [ 1 0 0 0 0 0 ] = . <END>
+//      [ 0 0 0 0 0 1 ] = b
+//      [ 0 0 0 0 1 0 ] = a
+//      [ 0 0 0 1 0 0 ] = n
+//      [ 0 0 1 0 0 0 ] = s
+//      [ 0 1 0 0 0 0 ] = e
+//      [ 1 0 0 0 0 0 ] = d
 //
 
-#define MAX_TESTS    11
+#define MAX_TESTS    16
 
 const char *test_strings[ MAX_TESTS ] = {
-       "hello", "help", "hope", "heel", "hole",
-       "poll",  "plop", "peel", "pool",
-       "loop", "lope"
+    "based", "baned", "nabes", "sedan", "snead",
+    "bend", "bead", "sand", "send", "sane", "band", "dean",
+    "end", "dab", "ben", "and"
 };
 
 
@@ -58,12 +58,12 @@ void set_input_vector( char c )
    // Set the one-hot.
    switch( c )
    {
-      case 'h': inputs[ 0 ] = 1.0; break;
-      case 'e': inputs[ 1 ] = 1.0; break;
-      case 'l': inputs[ 2 ] = 1.0; break;
-      case 'o': inputs[ 3 ] = 1.0; break;
-      case 'p': inputs[ 4 ] = 1.0; break;
-      case '.': inputs[ 5 ] = 1.0; break;
+      case 'b': inputs[ 0 ] = 1.0; break;
+      case 'a': inputs[ 1 ] = 1.0; break;
+      case 'n': inputs[ 2 ] = 1.0; break;
+      case 's': inputs[ 3 ] = 1.0; break;
+      case 'e': inputs[ 4 ] = 1.0; break;
+      case 'd': inputs[ 5 ] = 1.0; break;
       default: assert( 0 ); break;
    }
 
@@ -91,12 +91,12 @@ char get_parsed_output_vector( void )
 
    switch( best )
    {
-      case 0: return('h'); break;
-      case 1: return('e'); break;
-      case 2: return('l'); break;
-      case 3: return('o'); break;
-      case 4: return('p'); break;
-      case 5: return('.'); break;
+      case 0: return('b'); break;
+      case 1: return('a'); break;
+      case 2: return('n'); break;
+      case 3: return('s'); break;
+      case 4: return('e'); break;
+      case 5: return('d'); break;
       default: assert( 0 ) ; break;
    }
 
@@ -216,13 +216,13 @@ int test_word( unsigned int index )
 
    len = strlen( test_strings[ index ] );
 
-printf("Testing %s\n", test_strings[ index ] );
+//printf("Testing %s\n", test_strings[ index ] );
 
    for ( i = 0 ; i < len-1 ; i++ )
    {
       set_input_vector( (char)test_strings[ index ][ i ] );
       RNN_feed_forward( );
-      printf("     Fed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
+//      printf("     Fed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
    }
 
    // Advance to push the predicted character
@@ -254,7 +254,7 @@ void RNN_test_network( unsigned int cur_pop, unsigned int member )
 
    printf("Score = %d\n", score );
 
-   GA_set_fitness( cur_pop, member, ( double )( 2 ^ score ) );
+   GA_set_fitness( cur_pop, member, ( double )( ( 2 ^ score ) + 1.0 ) );
 
    return;
 }

@@ -14,9 +14,12 @@ typedef struct Member
    double     fitness;
 } Member;
 
+#define MUTATE_PROB    0.02
+#define CROSS_PROB     0.04
 
 // Prototypes
 
 void GA_init_population( unsigned int );
 double GA_get_member_weight( unsigned int, unsigned int, unsigned int );
 void GA_set_fitness( unsigned int, unsigned int, double );
+void GA_process_population( unsigned int );
