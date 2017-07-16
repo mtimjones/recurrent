@@ -222,16 +222,16 @@ printf("Testing %s\n", test_strings[ index ] );
    {
       set_input_vector( (char)test_strings[ index ][ i ] );
       RNN_feed_forward( );
-      printf("     %c\n", get_parsed_output_vector( ) );
+      printf("     Fed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
    }
 
    // Advance to push the predicted character
-   set_input_vector( '.' );
-   RNN_feed_forward( );
-   printf("     %c\n", get_parsed_output_vector( ) );
+//   set_input_vector( '.' );
+//   RNN_feed_forward( );
+//   printf("     %c\n", get_parsed_output_vector( ) );
 
-   printf("Testing %c == %c\n", 
-      get_parsed_output_vector( ), test_strings[ index ][ i ] );
+//   printf("Testing %c == %c\n", 
+//      get_parsed_output_vector( ), test_strings[ index ][ i ] );
 
    if ( get_parsed_output_vector( ) == test_strings[ index ][ i ] )
    {
