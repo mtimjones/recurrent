@@ -23,6 +23,8 @@ int test_population( unsigned int cur_pop )
 
    if ( ( avgf / ( double ) POP_SIZE ) > ( 0.8 * maxf ) ) return 1;
 
+   if ( maxf == (double)15) return 1;
+
    return 0;
 }
 

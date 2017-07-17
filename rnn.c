@@ -248,10 +248,6 @@ double RNN_test_network( unsigned int cur_pop, unsigned int member )
       score += test_word( i );
    }
 
-//   printf("Score = %d\n", score );
-
-   if (score == MAX_TESTS) exit( 0 );
-
    GA_set_fitness( cur_pop, member, ( double )( ( score * score ) + 1.0 ) );
 
    return score;
