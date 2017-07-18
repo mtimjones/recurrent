@@ -1,8 +1,8 @@
 // ga.h
 
-#define NUM_WEIGHTS    ( ( INPUT_NEURONS        * ( HIDDEN_NEURONS + 1 ) ) + \
-                       ( ( HIDDEN_NEURONS + 1 ) * ( HIDDEN_NEURONS + 1 ) ) + \
-                       ( ( HIDDEN_NEURONS + 1 ) * OUTPUT_NEURONS ) )
+#define NUM_WEIGHTS    ( ( ( INPUT_NEURONS  + 1 ) * ( HIDDEN_NEURONS     ) ) + \
+                         ( ( HIDDEN_NEURONS + 1 ) + ( HIDDEN_NEURONS + 1 ) ) + \
+                         ( ( HIDDEN_NEURONS + 1 ) *   OUTPUT_NEURONS     ) )
 
 #define POP_SIZE       10000
 

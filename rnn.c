@@ -5,12 +5,14 @@
 
 double inputs[ INPUT_NEURONS+1 ];
 double hidden[ HIDDEN_NEURONS+1 ];
-double context[ HIDDEN_NEURONS+1 ];
+double context1[ HIDDEN_NEURONS+1 ];
+double context2[ HIDDEN_NEURONS+1 ];
 double outputs[ OUTPUT_NEURONS ];
 
 double w_h_i[ HIDDEN_NEURONS ][ INPUT_NEURONS+1 ];
 double w_o_h[ OUTPUT_NEURONS ][ HIDDEN_NEURONS+1 ];
-double w_h_c[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
+double w_h_c1[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
+double w_h_c2[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
 
 #define sigmoid( x )    ( 1.0 / ( 1.0 + exp( -x ) ) )
 
@@ -36,12 +38,12 @@ double w_h_c[ HIDDEN_NEURONS ][ HIDDEN_NEURONS+1 ]; // Feedback (context) Neuron
 //      [ 1 0 0 0 0 0 ] = d
 //
 
-#define MAX_TESTS    15
+#define MAX_TESTS    17
 
 const char *test_strings[ MAX_TESTS ] = {
-    "based", "baned", "sedan", "nabes",
+    "based", "baned", "sedan", "nabes", "snead",
     "bend", "bead", "sand", "band", "dean", "send",
-    "end", "dab", "ben", "and", "sed"
+    "end", "dab", "ben", "and", "sed", "den"
 };
 
 
@@ -111,7 +113,8 @@ void clear_hidden_context( void )
 
    for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
    {
-      context[ k ] = 0.0;
+      context1[ k ] = 0.0;
+      context2[ k ] = 0.0;
    }
 
    return;
@@ -133,10 +136,8 @@ void RNN_feed_forward( void )
       }
 
       // Incorporate the recurrent hidden.
-      for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
-      {
-         hidden[ i ] += w_h_c[ i ][ k ] * context[ k ];
-      }
+      hidden[ i ] += w_h_c1[ i ] * context1[ i ];
+      hidden[ i ] += w_h_c2[ i ] * context2[ i ];
 
       // apply tanh activation function.
       hidden[ i ] = tanh( hidden[ i ] );
@@ -159,7 +160,8 @@ void RNN_feed_forward( void )
    // Save the context hidden value
    for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
    {
-      context[ k ] = hidden[ k ];
+      context2[ k ] = context1[ k ];
+      context1[ k ] = hidden[ k ];
    }
 
    return;
@@ -173,7 +175,8 @@ void RNN_load_network( unsigned int cur_pop, unsigned int member )
    // Set the biases.
    inputs[ INPUT_NEURONS ] = 1.0;
    hidden[ HIDDEN_NEURONS ] = 1.0;
-   context[ HIDDEN_NEURONS ] = 1.0;
+   context1[ HIDDEN_NEURONS ] = 1.0;
+   context2[ HIDDEN_NEURONS ] = 1.0;
 
    // Load the input->hidden weights into the network.
    for ( i = 0 ; i < HIDDEN_NEURONS ; i++ )
@@ -194,12 +197,14 @@ void RNN_load_network( unsigned int cur_pop, unsigned int member )
    }
    
    // Load the context->hidden weights into the network.
-   for ( i = 0 ; i < HIDDEN_NEURONS ; i++ )
+   for ( j = 0 ; j < ( HIDDEN_NEURONS + 1 ) ; j++ )
    {
-      for ( j = 0 ; j < ( HIDDEN_NEURONS + 1 ) ; j++ )
-      {
-         w_h_c[ i ][ j ] = GA_get_member_weight( cur_pop, member, weight++ );
-      }
+      w_h_c1[ j ] = GA_get_member_weight( cur_pop, member, weight++ );
+   }
+
+   for ( j = 0 ; j < ( HIDDEN_NEURONS + 1 ) ; j++ )
+   {
+      w_h_c2[ j ] = GA_get_member_weight( cur_pop, member, weight++ );
    }
 
    return;
