@@ -35,8 +35,8 @@ double w_h_c2[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
 
 const char *test_strings[ MAX_TESTS ] = {
     "based", "baned", "sedan", "nabes", "snead",
-    "bend", "bead", "sand", "band", "dean", "send",
-    "end", "dab", "ben", "and", "sed", "den"
+    "bend", "bead", "sand", "band", "dean", "send", "bands", "bade",
+    "end", "dab", "ben", "and", "sed", "den", "abs"
 };
 
 
