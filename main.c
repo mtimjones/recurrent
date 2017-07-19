@@ -3,10 +3,12 @@
 int test_population( unsigned int cur_pop )
 {
    unsigned int i;
-   double fitness;
-   double avgf, maxf;
+   int fittest;
+   int fitness, maxf;
+   double avgf;
 
-   maxf = avgf = 0;
+   maxf = 0;
+   avgf = 0.0;
 
    for ( i = 0 ; i < POP_SIZE ; i++ )
    {
@@ -14,22 +16,31 @@ int test_population( unsigned int cur_pop )
 
       fitness = RNN_test_network( cur_pop, i, 0 );
 
-      avgf += fitness;
+      avgf += (double) fitness;
 
-      if ( fitness > maxf ) maxf = fitness;
+      if ( fitness > maxf ) 
+      {
+         fittest = i;
+         maxf = fitness;
+      }
    }
 
-   printf( "Avgf = %g, Maxf = %g\n", avgf / (double)POP_SIZE, maxf );
+   printf( "Avgf = %g, Maxf = %d\n", avgf / (double)POP_SIZE, maxf );
 
    if ( ( avgf / ( double ) POP_SIZE ) > ( 0.8 * maxf ) ) return 1;
 
-   if ( maxf == (double)17) return 1;
+   if ( maxf == MAX_TESTS )
+   {
+      RNN_load_network( cur_pop, fittest );
+      ( void )RNN_test_network( cur_pop, fittest, 1 );
+      return 1;
+   }
 
    return 0;
 }
 
 
-void main( int argc, char *argv[] )
+int main( int argc, char *argv[] )
 {
    unsigned int cur_pop = 0;
    int done = 0;
@@ -48,6 +59,6 @@ void main( int argc, char *argv[] )
       cur_pop = !cur_pop;
    }
 
-   return;
+   return 0;
 }
 

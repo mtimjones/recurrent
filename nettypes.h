@@ -10,6 +10,8 @@
 #define HIDDEN_NEURONS  15
 #define OUTPUT_NEURONS   ( INPUT_NEURONS )
 
+#define MAX_TESTS       17
+
 #define getSRand( )       ( ( double ) rand( ) / ( double ) RAND_MAX )
 #define getRand( x )      ( int ) ( ( x ) * getSRand( ) )
 

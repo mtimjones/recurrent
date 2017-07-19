@@ -1,8 +1,9 @@
 // ga.h
 
-#define NUM_WEIGHTS    ( ( ( INPUT_NEURONS  + 1 ) * ( HIDDEN_NEURONS     ) ) + \
-                         ( ( HIDDEN_NEURONS + 1 ) + ( HIDDEN_NEURONS + 1 ) ) + \
-                         ( ( HIDDEN_NEURONS + 1 ) *   OUTPUT_NEURONS     ) )
+#define NUM_WEIGHTS    ( ( ( INPUT_NEURONS  + 1 ) * ( HIDDEN_NEURONS ) ) + \
+                         ( HIDDEN_NEURONS + 1 ) +                          \
+                         ( HIDDEN_NEURONS + 1 ) +                          \
+                         ( ( HIDDEN_NEURONS + 1 ) * OUTPUT_NEURONS   ) )
 
 #define POP_SIZE       2000
 
@@ -23,3 +24,4 @@ void GA_init_population( unsigned int );
 double GA_get_member_weight( unsigned int, unsigned int, unsigned int );
 void GA_set_fitness( unsigned int, unsigned int, double );
 void GA_process_population( unsigned int );
+

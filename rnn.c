@@ -23,11 +23,6 @@ double w_h_c2[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
 //          context
 //
 
-// test vocabulary (5)
-//    based, baned, nabes, sedan, snead
-//    bend, bead, sand, send, sane, band, dean
-//    end, dab, ben, and
-//
 // One hot vectors: 
 //
 //      [ 0 0 0 0 0 1 ] = b
@@ -37,8 +32,6 @@ double w_h_c2[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
 //      [ 0 1 0 0 0 0 ] = e
 //      [ 1 0 0 0 0 0 ] = d
 //
-
-#define MAX_TESTS    17
 
 const char *test_strings[ MAX_TESTS ] = {
     "based", "baned", "sedan", "nabes", "snead",
@@ -76,7 +69,7 @@ char get_parsed_output_vector( void )
 {
    // Classify and then return the output char (winner-takes-all).
 
-   int i, best = -1;
+   int i, best;
    double max;
 
    best = 0;
@@ -119,6 +112,7 @@ void clear_hidden_context( void )
 
    return;
 }
+
 
 void RNN_feed_forward( void )
 {
@@ -214,6 +208,7 @@ void RNN_load_network( unsigned int cur_pop, unsigned int member )
 int test_word( unsigned int index, int debug )
 {
    int i, len;
+   char test_char;
 
    // Clear the context nodes.
    clear_hidden_context( );
@@ -224,14 +219,15 @@ int test_word( unsigned int index, int debug )
 
    for ( i = 0 ; i < len-1 ; i++ )
    {
-      set_input_vector( (char)test_strings[ index ][ i ] );
+      test_char = (char)test_strings[ index ][ i ];
+      set_input_vector( test_char );
       RNN_feed_forward( );
-      if ( debug ) printf("/tFed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
+      if ( debug ) printf("\tFed %c, got %c\n", test_char, get_parsed_output_vector( ) );
    }
 
    if ( debug ) printf("\n");
 
-   if ( get_parsed_output_vector( ) == test_strings[ index ][ i ] )
+   if ( get_parsed_output_vector( ) == (char)test_strings[ index ][ i ] )
    {
       return 1;
    }
@@ -240,7 +236,7 @@ int test_word( unsigned int index, int debug )
 }
 
 
-double RNN_test_network( unsigned int cur_pop, unsigned int member, int debug )
+int RNN_test_network( unsigned int cur_pop, unsigned int member, int debug )
 {
    int i;
    int score = 0;
