@@ -4,7 +4,7 @@
                          ( ( HIDDEN_NEURONS + 1 ) + ( HIDDEN_NEURONS + 1 ) ) + \
                          ( ( HIDDEN_NEURONS + 1 ) *   OUTPUT_NEURONS     ) )
 
-#define POP_SIZE       10000
+#define POP_SIZE       2000
 
 typedef unsigned short Chromosome[ NUM_WEIGHTS ];
 

@@ -211,7 +211,7 @@ void RNN_load_network( unsigned int cur_pop, unsigned int member )
 }
 
 
-int test_word( unsigned int index )
+int test_word( unsigned int index, int debug )
 {
    int i, len;
 
@@ -220,37 +220,34 @@ int test_word( unsigned int index )
 
    len = strlen( test_strings[ index ] );
 
-//printf("Testing %s\n", test_strings[ index ] );
+   if ( debug ) printf("Testing %s\n", test_strings[ index ] );
 
    for ( i = 0 ; i < len-1 ; i++ )
    {
       set_input_vector( (char)test_strings[ index ][ i ] );
       RNN_feed_forward( );
-//      printf("     Fed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
+      if ( debug ) printf("/tFed %c, got %c\n", test_strings[index][i], get_parsed_output_vector( ) );
    }
 
-//   printf("Testing %c == %c\n", 
-//      get_parsed_output_vector( ), test_strings[ index ][ i ] );
+   if ( debug ) printf("\n");
 
    if ( get_parsed_output_vector( ) == test_strings[ index ][ i ] )
    {
       return 1;
    }
    
-//printf("Failed %s\n", test_strings[ index ] );
-
    return 0;
 }
 
 
-double RNN_test_network( unsigned int cur_pop, unsigned int member )
+double RNN_test_network( unsigned int cur_pop, unsigned int member, int debug )
 {
    int i;
    int score = 0;
 
    for ( i = 0 ; i < MAX_TESTS ; i++ )
    {
-      score += test_word( i );
+      score += test_word( i, debug );
    }
 
    GA_set_fitness( cur_pop, member, ( double )( ( score * score ) + 1.0 ) );

@@ -12,7 +12,7 @@ int test_population( unsigned int cur_pop )
    {
       RNN_load_network( cur_pop, i );
 
-      fitness = RNN_test_network( cur_pop, i );
+      fitness = RNN_test_network( cur_pop, i, 0 );
 
       avgf += fitness;
 
