@@ -15,8 +15,8 @@ typedef struct Member
    double     fitness;
 } Member;
 
-#define MUTATE_PROB    0.006
-#define CROSS_PROB     0.003
+#define MUTATE_PROB    0.004
+#define CROSS_PROB     0.002
 
 // Prototypes
 
