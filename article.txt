@@ -1,0 +1,62 @@
+
+Neural networks are computational structures that map an input to an output based upon
+through a network of highly connected processing elements (neurons).  For a quick 
+primer on neural networks, you can read the prior article in this series which looked 
+at Perceptrons (the building block of neural networks) and multi-layer perceptrons 
+with backpropagation learning.
+
+In the prior article, we explored the feedforward network topology.  In this topology,
+shown in Figure 1, an input vector is fed into the network through the hidden layers
+and eventually resulting in an output.  In this network, the input maps to the output
+(every time the input is applied) in a deterministic way.
+
+Figure 1  Feedforward Network Topology.  *** box-level diagram.
+
+But let's say that we're dealing with time-series data.  A single data point in 
+isolation is not entirely useful because it lacks important attributes (is the data
+series changing, growing, shrinking, etc.).  Consider a natural language processing
+application where letters or words represent the network input.  Again, these inputs
+aren't useful in isolation, but instead in consideration of what occurred before it
+to provide context.
+
+Applications of time-series data require a new type of topology that can consider
+the history of the input.  This is where Recurrent Neural Networks (RNN) can be 
+applied.  An RNN includes the ability to maintain internal memory with feedback and 
+therefore support temporal behavior.  In the example shown in Figure 2, the hidden 
+layer output is applied back into the hidden layer.
+
+Figure 2  Recurrent Network Topology.  *** box-level diagram.
+
+RNNs aren't a single class of network, but a collection of topologies that
+apply to different problems.  We'll explore some of these architectures in the next
+section.
+
+
+Architectures of Recurrent Neural Networks
+
+   Hopfield
+
+Figure 3  Hopfield Network Example.
+
+   Simple Recurrent Networks
+
+Figure 4  Elman / Jordan Network Example.
+
+   LSTM / GRU
+
+Figure 5  LSTM / GRU Network Example.
+
+
+RNN Training Algorithms
+
+   Gradient Descent
+
+   BPTT
+
+   Evolutionary Methods
+
+RNN Example
+
+Going Further
+
+
