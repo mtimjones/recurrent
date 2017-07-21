@@ -36,7 +36,7 @@ double w_h_c2[ HIDDEN_NEURONS+1 ]; // Feedback (context) Neurons
 
 // Test data set for last letter prediction.
 const char *test_strings[ MAX_TESTS ] = {
-    "based", "baned", "sedan", "nabes", "snead", "bands",
+    "based", "baned", "sedan", "nabes", "snead", "bands", "deans", "beans", "beads",
     "bend", "bead", "sand", "band", "dean", "send", "bade", "sean",
     "end", "dab", "ben", "and", "sed", "den", "abs", "sad"
 };
