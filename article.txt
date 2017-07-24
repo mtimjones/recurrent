@@ -57,6 +57,197 @@ RNN Training Algorithms
 
 RNN Example
 
+The meat of the RNN is found in the RNN_feed_forward function, which implements the
+execution of the RNN network (see Listing 1).  This function is split into three 
+stages and mirrors the network shown in Figure X.  In the first stage, we calculate 
+the outputs of the hidden layer which incorporates the input layer and the context 
+layer (each with their own set of weights).  The context nodes are initialized to
+zero before testing a given word.  In the second stage, we calculate the outputs of
+the output layer.  This incorporates each of the hidden layer neurons with their own
+distinct weights.  Finally in the third stage, we propagate the first context layer
+neuron to the second context layer neuron, and the hidden layer output to the 
+first context node.  This implements the two layers of memory within the network.
+
+Note that in the hidden layer we use the tan function as our activation function and
+the sigmoid function as the activation function in the output layer.  The tan
+function is useful in the hidden layer because it has the range -1..1 (allowing both
+positive and negative outputs from the hidden layer).  In the output layer, where
+we're interested in the largest value to activate the one-hot vector, we use the 
+sigmoid as its range is 0..1.
+
+Listing 1  RNN Feed Forward Function.
+
+void RNN_feed_forward( void )
+{
+   int i, j, k;
+
+   // Stage 1: Calculate hidden layer outputs
+   for ( i = 0 ; i < HIDDEN_NEURONS ; i++ )
+   {
+      hidden[ i ] = 0.0;
+
+      // Incorporate the input.
+      for ( j = 0 ; j < INPUT_NEURONS+1 ; j++ )
+      {
+         hidden[ i ] += w_h_i[ i ][ j ] * inputs[ j ];
+      }
+
+      // Incorporate the recurrent hidden.
+      hidden[ i ] += w_h_c1[ i ] * context1[ i ];
+      hidden[ i ] += w_h_c2[ i ] * context2[ i ];
+
+      // apply tanh activation function.
+      hidden[ i ] = tanh( hidden[ i ] );
+   }
+
+   // Stage 2: Calculate output layer outputs
+   for ( i = 0 ; i < OUTPUT_NEURONS ; i++ )
+   {
+      outputs[ i ] = 0.0;
+
+      for ( j = 0 ; j < HIDDEN_NEURONS+1 ; j++ )
+      {
+         outputs[ i ] += ( w_o_h[ i ][ j ] * hidden[ j ] );
+      }
+
+      // apply sigmoid activation function.
+      outputs[ i ] = sigmoid( outputs[ i ] );
+   }
+
+   // Stage 3: Save the context hidden value
+   for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
+   {
+      context2[ k ] = context1[ k ];
+      context1[ k ] = hidden[ k ];
+   }
+
+   return;
+}
+
+
+Our genetic algorithm is implemented in Listing 2.  This can be viewed in three parts.
+The first part calculates the total fitness of the population (used in the selection 
+process) and also the most fit chromosome in the population.  The most fit chromosome
+is used in the second part which simply copies this chromosome to the next population.
+This is a form of elitist selection where we maintain the most fit chromosome through
+to the next population.  The population consists of 2000 chromosomes.
+
+In the final part of the GA, we randomly select two parents from the population and 
+create a child from them for the new population.  The selection algorithm is based 
+upon what's called 'roulette wheel selection' where chromosomes are selected at random,
+but more fit parents are selected at a higher rate.  Once two parents are selected,
+they are recombined into a child chromosome for the next population.  This process
+includes the potential for crossover (where one of the parents genes are selected
+for propagation) and also mutation (where a weight can be randomly redefined).  This
+process occurs with low probability (one mutation per recombination, and slightly less
+for crossover).
+
+
+Listing 2  Genetic Algorithm Function.
+
+void GA_process_population( unsigned int pop )
+{
+   double sum = 0.0;
+   double max = 0.0;
+   int best;
+   int i, child;
+
+   best = 0;
+   sum = max = population[ pop ][ best ].fitness;
+
+   // Calculate the total population fitness
+   for ( i = 1 ; i < POP_SIZE ; i++ )
+   {
+      sum += population[ pop ][ i ].fitness;
+      if ( population[ pop ][ i ].fitness > max )
+      {
+         best = i;
+         max = population[ pop ][ i ].fitness;
+      }
+   }
+
+   // Elitist -- keep the best performing chromosome.
+   recombine( pop, best, best, 0, 0.0, 0.0 );
+
+   // Generate the next generation.
+   for ( child = 1 ; child < POP_SIZE ; child++ )
+   {
+      unsigned int parent1 = select_parent( pop, sum );
+      unsigned int parent2 = select_parent( pop, sum );
+
+      recombine( pop, parent1, parent2, child, MUTATE_PROB, CROSS_PROB );
+   }
+
+   return;
+}
+
+
+Sample Execution
+
+The sample source code at Github can be built in Linux by simply typing 'make', and then
+execute with './rnn'.  Upon execution, the population is randomly created and then 
+natural selection occurs over some number of generations until a solution is found that
+accurately predicts the last character of the entire test vocabulary or the simulation
+fails to converge on a solution properly.  This is determined by average fitness; if it
+reaches 80% of the maximum fitness then the population lacks sufficient diversity to 
+find a solution and will exit.
+
+If a solution is found, it will emit the entire test vocabulary and show the prediction
+of each word.  Note that the chromosome fitness is based only on the final letter for
+a word, so internal letters are not predicted.  Listing 3 illustrates a sample of the
+successful output.
+
+Listing 3  Partial output for a successful run.
+
+$ ./run
+Solution found.
+
+Testing based
+	Fed b, got s
+	Fed a, got b
+	Fed s, got e
+	Fed e, got d
+
+Testing baned
+	Fed b, got s
+	Fed a, got b
+	Fed n, got d
+	Fed e, got d
+
+Testing sedan
+	Fed s, got s
+	Fed e, got d
+	Fed d, got s
+	Fed a, got n
+
+...
+
+Testing den
+	Fed d, got d
+	Fed e, got n
+
+Testing abs
+	Fed a, got d
+	Fed b, got s
+
+Testing sad
+	Fed s, got s
+	Fed a, got d
+
+
+The graph of the average and maximum fitness is shown in Figure 9.  Note that each 
+graph begins at a fitness level of 13.  This is because 12 of the words end in 'd',
+so a network just emitting 'd' for any letter will have that level of success.  But
+moving forward, the weights must be evolved to consider prior letters in order to 
+accurately predict for the given vocabulary.  As shown, over half of the generations
+are required to predict the last test case.
+
+Figure 9  Graph of a Successful and Unsuccessful Evolution.
+
+Each of the graphs demonstrate a theory in evolutionary biology called 'punctuated
+equilibria.'  This is demonstrated in long periods of stasis (general stability) 
+punctuated by a burst of evolutionary change.
+
 Going Further
 
 

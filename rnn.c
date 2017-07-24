@@ -120,7 +120,7 @@ void RNN_feed_forward( void )
 {
    int i, j, k;
 
-   // Calculate hidden layer outputs
+   // Stage1: Calculate hidden layer outputs
    for ( i = 0 ; i < HIDDEN_NEURONS ; i++ )
    {
       hidden[ i ] = 0.0;
@@ -139,7 +139,7 @@ void RNN_feed_forward( void )
       hidden[ i ] = tanh( hidden[ i ] );
    }
 
-   // Calculate output layer outputs
+   // Stage 2: Calculate output layer outputs
    for ( i = 0 ; i < OUTPUT_NEURONS ; i++ )
    {
       outputs[ i ] = 0.0;
@@ -153,7 +153,7 @@ void RNN_feed_forward( void )
       outputs[ i ] = sigmoid( outputs[ i ] );
    }
 
-   // Save the context hidden value
+   // Stage 3: Save the context hidden value
    for ( k = 0 ; k < HIDDEN_NEURONS+1 ; k++ )
    {
       context2[ k ] = context1[ k ];
